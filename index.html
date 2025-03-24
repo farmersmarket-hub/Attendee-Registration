@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Attendee Registration Form</title>
+	<!-- Choices.js CDN -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+	<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+	
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,8 +78,512 @@
             text-align: center;
             border-radius: 5px;
         }
+		.hidden { display: none; }
+		.choices__inner {
+		  min-height: 42px !important;
+		  padding: 6px 10px !important;
+		  font-size: 14px !important;
+		  border: 1px solid #cbd5e0 !important;
+		  border-radius: 8px !important;
+		  background-color: #f9fafb !important;
+		  display: flex !important;
+		  flex-wrap: wrap !important;
+		  align-items: center !important;
+		  gap: 6px !important;
+		}
+		.choices__list--multiple .choices__item {
+		  display: inline-flex !important;
+		  align-items: center !important;
+		  background-color: #0f6674 !important;
+		  color: white !important;
+		  font-weight: 600 !important;
+		  font-size: 13px !important;
+		  border-radius: 9999px !important;
+		  padding: 4px 10px !important;
+		  line-height: 1.2 !important;
+		  margin: 2px 2px !important;
+		  white-space: nowrap !important;
+		}
+		.choices__list--multiple .choices__item .choices__button {
+		  margin-left: 6px !important;
+		  color: white !important;
+		  opacity: 0.8 !important;
+		  font-size: 14px !important;
+		}
+		.choices__input {
+		  font-size: 14px !important;
+		  padding: 6px 4px !important;
+		  margin: 2px 0 !important;
+		  min-width: 150px !important;
+		  border: none !important;
+		  outline: none !important;
+		  background: transparent !important;
+		  color: #333;
+		}
+		.choices__list--dropdown .choices__item--selectable {
+		  padding: 8px 12px !important;
+		  font-size: 14px !important;
+		}
+		.choices__item--selectable.is-highlighted {
+		  background-color: #edf2f7 !important;
+		}
+		.tooltip {
+		  position: relative;
+		  display: inline-block;
+		  margin-left: 6px;
+		  width: 18px;
+		  height: 18px;
+		  background-color: #007bff;
+		  color: white;
+		  font-size: 12px;
+		  text-align: center;
+		  border-radius: 50%;
+		  font-weight: bold;
+		  cursor: pointer;
+		  line-height: 18px;
+		}
+		.tooltip .tooltiptext {
+		  visibility: hidden;
+		  width: 180px;
+		  background-color: #333;
+		  color: #fff;
+		  text-align: center;
+		  border-radius: 5px;
+		  padding: 6px;
+		  position: absolute;
+		  z-index: 1;
+		  top: -5px;
+		  left: 110%;
+		  opacity: 0;
+		  transition: opacity 0.3s ease;
+		}
+		.tooltip:hover .tooltiptext {
+		  visibility: visible;
+		  opacity: 1;
+		}
+		.hint-text {
+		  display: block;
+		  font-size: 13px;
+		  color: #6b7280; /* a soft gray, similar to Tailwind's gray-600 */
+		  margin-top: 4px;
+		}
+		.no-global-star::after {
+		  content: none !important;
+		}
+		.label-required .main-label::after {
+		  content: " *";
+		  color: red;
+		  font-weight: bold;
+		}
+
     </style>
-	<script>
+	
+</head>
+<body>
+    <div class="container" >
+		<div id="successMessage" class="success-message"></div>
+        <h2>Attendee Registration Form</h2>
+        <form id="registrationForm" onsubmit="generateNeighborId(event)">
+			<div class="form-group">
+                <label for="date">Today's Date</label>
+                <input type="date" id="todayDate" name="todayDate" readonly>
+            </div>
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" required oninput="validateInput(event, /^[A-Za-z\s]*$/)" data-error="Only alphabets are allowed.">
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" name="lastName" required oninput="validateInput(event, /^[A-Za-z\s]*$/)" data-error="Only alphabets are allowed.">
+            </div>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" name="age" required>
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender" required>
+                    <option value="">- Select Gender -</option>
+                    <option value="Woman">Woman</option>
+                    <option value="Man">Man</option>
+                    <option value="Transgender">Transgender</option>
+                    <option value="Non-binary">Non-binary</option>
+                    <option value="Prefer not to respond">Prefer not to respond</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="race">Race/Ethnicity</label>
+                <select id="race" name="race" required>
+                    <option value="">- Select Race -</option>
+                    <option value="Black/African-American">Black/African-American</option>
+                    <option value="White/Caucasian">White/Caucasian</option>
+                    <option value="Hispanic/Latine">Hispanic/Latine</option>
+                    <option value="Native American/Alaskan Native/Indigenous American">Native American/Alaskan Native/Indigenous American</option>
+                    <option value="Asian/Asian-American">Asian/Asian-American</option>
+					<option value="Middle Eastern/North African">Middle Eastern/North African</option>
+                </select>
+            </div>
+			<div class="form-group">
+                <label for="nationality">Nationality</label>
+                <select id="nationality" name="nationality" multiple required>
+					<option value="U.S.">U.S.</option>
+					<option value="Japanese">Japanese</option>
+					<option value="Chinese">Chinese</option>
+					<option value="Korean">Korean</option>
+					<option value="Vietnamese">Vietnamese</option>
+					<option value="Other East Asian">Other East Asian</option>
+					<option value="Indian">Indian</option>
+					<option value="Pakistani">Pakistani</option>
+					<option value="Sri Lankan">Sri Lankan</option>
+					<option value="Burmese">Burmese</option>
+					<option value="Cambodian">Cambodian</option>
+					<option value="Other South or Southeast Asian">Other South or Southeast Asian</option>
+					<option value="Ethiopian">Ethiopian</option>
+					<option value="Eritrean">Eritrean</option>
+					<option value="Somali">Somali</option>
+					<option value="Other East African">Other East African</option>
+					<option value="Liberian">Liberian</option>
+					<option value="Nigerian">Nigerian</option>
+					<option value="Ghanaian">Ghanaian</option>
+					<option value="Congolese">Congolese</option>
+					<option value="Cameroonian">Cameroonian</option>
+					<option value="Other West, Central or North African">Other West, Central or North African</option>
+					<option value="Middle Eastern">Middle Eastern</option>
+					<option value="Mexican">Mexican</option>
+					<option value="Central American">Central American</option>
+					<option value="South American">South American</option>
+					<option value="Caribbean Island">Caribbean Island</option>
+					<option value="Pacific Islander">Pacific Islander</option>
+					<option value="Ukrainian">Ukrainian</option>
+					<option value="Russian">Russian</option>
+					<option value="Other European">Other European</option>
+					<option value="Other">Other</option>
+				</select>
+				<div id="otherNationalityDiv" class="hidden">
+					<label for="otherNationality">Please specify </label>
+					<input type="text" id="otherNationality" name="otherNationality" placeholder="Enter other nationality" required>
+				</div>
+			</div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <input type="text" id="address" name="address" required>
+            </div>
+			<div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" required>
+            </div>
+			<div class="form-group">
+                <label for="state">State</label>
+                <select id="state" name="state" required>
+					<option value="">- Select a state -</option>
+					<option value="AL">AL</option>
+					<option value="AK">AK</option>
+					<option value="AZ">AZ</option>
+					<option value="AR">AR</option>
+					<option value="CA">CA</option>
+					<option value="CO">CO</option>
+					<option value="CT">CT</option>
+					<option value="DE">DE</option>
+					<option value="DC">DC</option>
+					<option value="FL">FL</option>
+					<option value="GA">GA</option>
+					<option value="HI">HI</option>
+					<option value="ID">ID</option>
+					<option value="IL">IL</option>
+					<option value="IN">IN</option>
+					<option value="IA">IA</option>
+					<option value="KS">KS</option>
+					<option value="KY">KY</option>
+					<option value="LA">LA</option>
+					<option value="ME">ME</option>
+					<option value="MD">MD</option>
+					<option value="MA">MA</option>
+					<option value="MI">MI</option>
+					<option value="MN">MN</option>
+					<option value="MS">MS</option>
+					<option value="MO">MO</option>
+					<option value="MT">MT</option>
+					<option value="NE">NE</option>
+					<option value="NV">NV</option>
+					<option value="NH">NH</option>
+					<option value="NJ">NJ</option>
+					<option value="NM">NM</option>
+					<option value="NY">NY</option>
+					<option value="NC">NC</option>
+					<option value="ND">ND</option>
+					<option value="OH">OH</option>
+					<option value="OK">OK</option>
+					<option value="OR">OR</option>
+					<option value="PA">PA</option>
+					<option value="RI">RI</option>
+					<option value="SC">SC</option>
+					<option value="SD">SD</option>
+					<option value="TN">TN</option>
+					<option value="TX">TX</option>
+					<option value="UT">UT</option>
+					<option value="VT">VT</option>
+					<option value="VA">VA</option>
+					<option value="WA">WA</option>
+					<option value="WV">WV</option>
+					<option value="WI">WI</option>
+					<option value="WY">WY</option>
+				</select>
+            </div>
+            <div class="form-group">
+                <label for="zip">Zip Code</label>
+                <input type="text" id="zip" name="zip" required oninput="validateInput(event, /^\d{5}(-\d{4})?$/)" data-error="Enter a valid zip code (e.g., 12345 or 12345-6789).">
+            </div>
+			<div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+			<div class="form-group">
+                <label for="contact">Contact Phone Number</label>
+                <input type="text" id="contact" name="contact" required>
+            </div>
+			<div class="form-group">
+                <label for="regType">Individual/Family Registration?</label>
+                <select id="regType" name="regType" required>
+                    <option value="">- Select -</option>
+                    <option value="Yes">Individual</option>
+                    <option value="Family">Family</option>
+                </select>
+            </div>
+            <div class="form-group">
+			  <label for="householdSize">Household Size</label>
+			  <input type="number" id="householdSize" name="householdSize" required min="1">
+			</div>
+
+			<!-- Collapsible family section -->
+			<div class="form-group">
+				<div id="familySection" style="display: none; margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 8px;">
+				  <h4 style="margin-bottom: 10px; cursor: pointer;" onclick="toggleFamilySection()">
+					Other Household Members <span id="toggleArrow">▼</span>
+				  </h4>
+				  <div id="familyMembersWrapper" style="max-height: 500px; overflow-y: auto; transition: max-height 0.3s ease;">
+					<div id="familyMembersContainer"></div>
+				  </div>
+				</div>
+			</div>
+            <div class="form-group">
+                <label for="engLang">Is English your second language</label>
+                <select id="engLang" name="engLang" required>
+                    <option value="">- Select -</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+			<div class="form-group">
+                <label for="reachProgram">Which REACH Program are you in?</label>
+                <select id="reachProgram" name="reachProgram" required>
+					<option value="">Select</option>
+                    <option value="00">Unknown</option>
+                    <option value="01">None</option>
+                    <option value="10">REACHing Us Farmers Market</option>
+                    <option value="20">PGL CSA</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="registeringVendor">Which Registering Vendor are you with?</label>
+                <select id="registeringVendor" name="registeringVendor" required>
+					<option value="">Select</option>
+                    <option value="000">Unknown</option>
+                    <option value="010">None</option>
+                    <option value="100">PGL</option>
+                    <option value="200">Mr. Farms- Maxi Hernandez</option>
+                    <option value="300">Sofia Farm- Mohammad</option>
+                    <option value="400">Rohingya Burmese Farm- Ali Johar</option>
+                    <option value="500">Yoshi Berry - Ishmail Santos</option>
+                </select>
+            </div>
+			<div class="form-group">
+                <label for="reachPopulation">Are you in any of these Marginalized Population?</label>
+                <select id="reachPopulation" name="reachPopulation" required>
+                    <option value="">Select</option>
+                    <option value="0000">Unknown</option>
+                    <option value="0100">None</option>
+                    <option value="1000">Low-income</option>
+                    <option value="2000">Immigrant</option>
+                    <option value="3000">BIPOC</option>
+                    <option value="4000">Low-income BIPOC</option>
+                    <option value="5000">BIPOC Immigrant</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="csaRecipient">Are you currently enrolled as a PGL CSA recipient?</label>
+                <select id="csaRecipient" name="csaRecipient" required>
+                    <option value="">- Select -</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+			<div class="form-group">
+                <label for="programs">Are you/your family enrolled in any of the following programs?</label>
+				<label for="snap">SNAP</label>
+                <select id="snap" name="snap" required>
+                    <option value="">- Select -</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+				<label for="wallace">Wallace Clinic</label>
+                <select id="wallace" name="wallace" required>
+                    <option value="">- Select -</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+				<label for="ofb">Oregon Food Bank</label>
+                <select id="ofb" name="ofb" required>
+                    <option value="">- Select -</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+			<div class="form-group">
+				<label for="pglBucks" class="label-required no-global-star">
+				<span class="main-label">Do you have any PGL Bucks with you today?</span>
+				<span class="hint-text">(Yes, only if you currently have bucks in hand to use)</span>
+				</label>
+                <select id="pglBucks" name="pglBucks" onchange="togglePGLAmount()" required>
+                    <option value="">- Select -</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
+			<div class="form-group hidden" id="pglAmountDiv">
+                <label>If Yes, Amount</label>
+                <input type="number" required>
+            </div>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+	
+<script>
+		document.getElementById('todayDate').valueAsDate = new Date();
+		
+		function toggleFamilySection() {
+		  const wrapper = document.getElementById("familyMembersWrapper");
+		  const arrow = document.getElementById("toggleArrow");
+		  if (wrapper.style.display === "none") {
+			wrapper.style.display = "block";
+			arrow.textContent = "▼";
+		  } else {
+			wrapper.style.display = "none";
+			arrow.textContent = "▲";
+		  }
+		}
+		
+		function togglePGLAmount() {
+            const select = document.getElementById('pglBucks');
+            const amountDiv = document.getElementById('pglAmountDiv');
+            amountDiv.classList.toggle('hidden', select.value === 'No');
+        }
+		
+		document.addEventListener('DOMContentLoaded', function () {
+					new Choices('#nationality', {
+						removeItemButton: true,
+						placeholderValue: 'Select Nationality',
+						searchPlaceholderValue: 'Type to search...',
+						shouldSort: false
+					});
+					
+					const otherDiv = document.getElementById('otherNationalityDiv');
+
+					document.querySelector('#nationality').addEventListener('change', function () {
+						const selectedOptions = Array.from(this.selectedOptions).map(opt => opt.value);
+						if (selectedOptions.includes('Other')) {
+							otherDiv.classList.remove('hidden');
+						} else {
+							otherDiv.classList.add('hidden');
+						}
+					});
+					
+					new Choices('#state', {
+						searchEnabled: true,
+						shouldSort: false
+					});
+				
+					new Choices('#race', {
+						searchEnabled: true,
+						shouldSort: false
+					});
+				
+					new Choices('#gender', {
+						searchEnabled: true,
+						shouldSort: false
+					});
+				
+					const householdInput = document.getElementById("householdSize");
+					const section = document.getElementById("familySection");
+					const container = document.getElementById("familyMembersContainer");
+					const wrapper = document.getElementById("familyMembersWrapper");
+
+					householdInput.addEventListener("input", function () {
+						const count = parseInt(this.value);
+						container.innerHTML = "";
+
+						if (count && count > 1) {
+						  section.style.display = "block";
+						  wrapper.style.display = "block";
+
+						  for (let i = 1; i < count; i++) {
+							const card = document.createElement("div");
+							card.className = "member-card";
+							card.style.cssText = `
+							  border: 1px solid #ccc;
+							  padding: 16px;
+							  border-radius: 8px;
+							  margin-bottom: 15px;
+							  background: #f9f9f9;
+							`;
+
+							const badge = document.createElement("div");
+							badge.textContent = `Member ${i} of ${count - 1}`;
+							badge.style.cssText = `
+							  background: #007bff;
+							  color: white;
+							  padding: 4px 10px;
+							  font-size: 13px;
+							  font-weight: bold;
+							  border-radius: 20px;
+							  display: inline-block;
+							  margin-bottom: 10px;
+							`;
+
+							card.appendChild(badge);
+
+							card.innerHTML += `
+							  <div class="form-group">
+								<label for="member${i}FirstName">First Name:</label>
+								<input type="text" name="member${i}FirstName" id="member${i}FirstName" required>
+							  </div>
+
+							  <div class="form-group">
+								<label for="member${i}LastName">Last Name:</label>
+								<input type="text" name="member${i}LastName" id="member${i}LastName" required>
+							  </div>
+
+							  <div class="form-group">
+								<label for="member${i}Age">
+								  Age:
+								  <span class="tooltip">i
+									<span class="tooltiptext">Member must be over the age of 2</span>
+								  </span>
+								</label>
+								<input type="number" name="member${i}Age" id="member${i}Age" min="3" required
+								  oninvalid="this.setCustomValidity('Age must be at least 3')"
+								  oninput="this.setCustomValidity('')">
+							  </div>
+							`;
+
+							container.appendChild(card);
+						  }
+						} else {
+						  section.style.display = "none";
+						  wrapper.style.display = "none";
+						}
+					});
+				});
+	
         function validateInput(event, pattern) {
             let inputField = event.target;
             if (!pattern.test(inputField.value)) {
@@ -85,7 +593,7 @@
             }
         }
 		
-		function generateNeighborId(event) { debugger;
+		function generateNeighborId(event) {
             event.preventDefault();
             
             const reachProgramMapping = {
@@ -141,128 +649,6 @@
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 			
 		}
-    </script>
-</head>
-<body>
-    <div class="container" >
-		<div id="successMessage" class="success-message"></div>
-        <h2>Attendee Registration Form</h2>
-        <form id="registrationForm" onsubmit="generateNeighborId(event)">
-            <div class="form-group">
-                <label for="firstName">First Name</label>
-                <input type="text" id="firstName" name="firstName" required oninput="validateInput(event, /^[A-Za-z\s]*$/)" data-error="Only alphabets are allowed.">
-            </div>
-            <div class="form-group">
-                <label for="lastName">Last Name</label>
-                <input type="text" id="lastName" name="lastName" required oninput="validateInput(event, /^[A-Za-z\s]*$/)" data-error="Only alphabets are allowed.">
-            </div>
-            <div class="form-group">
-                <label for="date">Date of Attendance</label>
-                <input type="date" id="dateOfAttendance" name="dateOfAttendance" required>
-            </div>
-            <div class="form-group">
-                <label for="age">Age</label>
-                <input type="number" id="age" name="age" required>
-            </div>
-            <div class="form-group">
-                <label for="gender">Gender</label>
-                <select id="gender" name="gender" required>
-                    <option value="">Select</option>
-                    <option value="Woman">Woman</option>
-                    <option value="Man">Man</option>
-                    <option value="Transgender">Transgender</option>
-                    <option value="Non-binary">Non-binary</option>
-                    <option value="Prefer not to respond">Prefer not to respond</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="race">Race/Ethnicity</label>
-                <select id="race" name="race" required>
-                    <option value="">Select</option>
-                    <option value="American Indian or Alaska Native">American Indian or Alaska Native</option>
-                    <option value="Asian">Asian</option>
-                    <option value="African American">African American</option>
-                    <option value="Hispanic and Latino">Hispanic and Latino</option>
-                    <option value="Middle Eastern or North African">Middle Eastern or North African</option>
-                    <option value="Native Hawaiian or other Pacific Islander">Native Hawaiian or other Pacific Islander</option>
-                    <option value="White">White</option>
-                    <option value="Prefer not to respond">Prefer not to respond</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" id="address" name="address" required>
-            </div>
-            <div class="form-group">
-                <label for="zip">Zip Code</label>
-                <input type="text" id="zip" name="zip" required oninput="validateInput(event, /^\d{5}(-\d{4})?$/)" data-error="Enter a valid zip code (e.g., 12345 or 12345-6789).">
-            </div>
-            <div class="form-group">
-                <label for="householdSize">Household Size</label>
-                <input type="number" id="householdSize" name="householdSize" required>
-            </div>
-            <div class="form-group">
-                <label for="publicAssistance">Are you On/Eligible for Public Assistance?</label>
-                <select id="publicAssistance" name="publicAssistance" required>
-                    <option value="">Select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </div>
-			<div class="form-group">
-                <label for="reachProgram">REACH Program</label>
-                <select id="reachProgram" name="reachProgram" required>
-					<option value="">Select</option>
-                    <option value="00">Unknown</option>
-                    <option value="01">None</option>
-                    <option value="10">REACHing Us Farmers Market</option>
-                    <option value="20">PGL CSA</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="registeringVendor">Registering Vendor</label>
-                <select id="registeringVendor" name="registeringVendor" required>
-					<option value="">Select</option>
-                    <option value="000">Unknown</option>
-                    <option value="010">None</option>
-                    <option value="100">PGL</option>
-                    <option value="200">Mr. Farms- Maxi Hernandez</option>
-                    <option value="300">Sofia Farm- Mohammad</option>
-                    <option value="400">Rohingya Burmese Farm- Ali Johar</option>
-                    <option value="500">Yoshi Berry - Ishmail Santos</option>
-                </select>
-            </div>
-			<div class="form-group">
-                <label for="reachPopulation">Marginalized Population</label>
-                <select id="reachPopulation" name="reachPopulation" required>
-                    <option value="">Select</option>
-                    <option value="0000">Unknown</option>
-                    <option value="0100">None</option>
-                    <option value="1000">Low-income</option>
-                    <option value="2000">Immigrant</option>
-                    <option value="3000">BIPOC</option>
-                    <option value="4000">Low-income BIPOC</option>
-                    <option value="5000">BIPOC Immigrant</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="csaRecipient">Are you a CSA recipient?</label>
-                <select id="csaRecipient" name="csaRecipient" required>
-                    <option value="">Select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="activeCsaRecipient">Are you currently an active CSA recipient?</label>
-                <select id="activeCsaRecipient" name="activeCsaRecipient" required>
-                    <option value="">Select</option>
-                    <option value="Yes">Yes</option>
-                    <option value="No">No</option>
-                </select>
-            </div>
-            <button type="submit">Register</button>
-        </form>
-    </div>
+    </script>	
 </body>
 </html>

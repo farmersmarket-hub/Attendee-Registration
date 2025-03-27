@@ -261,7 +261,7 @@
 				</select>
 				<div id="otherNationalityDiv" class="hidden">
 					<label for="otherNationality">Please specify </label>
-					<input type="text" id="otherNationality" name="otherNationality" placeholder="Enter other nationality" required>
+					<input type="text" id="otherNationality" name="otherNationality" placeholder="Enter other nationality">
 				</div>
 			</div>
             <div class="form-group">
@@ -451,7 +451,7 @@
             </div>
 			<div class="form-group hidden" id="pglAmountDiv">
                 <label>If Yes, Amount</label>
-                <input type="number" name="pglAmount" required>
+                <input type="number" name="pglAmount" id="pglAmount">
             </div>
             <button type="submit">Register</button>
         </form>
@@ -475,7 +475,9 @@
 		function togglePGLAmount() {
             const select = document.getElementById('pglBucks');
             const amountDiv = document.getElementById('pglAmountDiv');
+			const amountInput = document.getElementById('pglAmount');
             amountDiv.classList.toggle('hidden', select.value === 'No');
+			amountInput.required = (select.value === "Yes");
         }
 		
 		document.addEventListener('DOMContentLoaded', function () {
@@ -487,13 +489,16 @@
 					});
 					
 					const otherDiv = document.getElementById('otherNationalityDiv');
+					const otherInput = document.getElementById('otherNationality');
 
 					document.querySelector('#nationality').addEventListener('change', function () {
 						const selectedOptions = Array.from(this.selectedOptions).map(opt => opt.value);
 						if (selectedOptions.includes('Other')) {
 							otherDiv.classList.remove('hidden');
+							otherInput.required = true;
 						} else {
 							otherDiv.classList.add('hidden');
+							otherInput.required = false;
 						}
 					});
 					

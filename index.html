@@ -453,6 +453,7 @@
                 <label>If Yes, Amount</label>
                 <input type="number" name="pglAmount" id="pglAmount">
             </div>
+			<input type="hidden" name="neighborid" id="neighborid">
             <button type="submit">Register</button>
         </form>
     </div>
@@ -638,6 +639,7 @@
             let formattedDate = ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + date.getFullYear();
 
             let neighborId = `REACH-${reachProgramId}-${vendorId}-${populationId}-${neighborNumber}-${formattedDate}`;
+			document.getElementById("neighborid").value = neighborId;
 			
 			const form = document.getElementById("registrationForm");
             const formData = new FormData(form);
@@ -660,7 +662,7 @@
 			document.getElementById("registrationForm").reset();
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 
-			fetch('https://script.google.com/macros/s/AKfycbze9DC7wBR9yXAGepViNj6cSJNYGdIPJoeUG1IFXygXEvX9TRTyklyNC6csYKF-AqDKgQ/exec', {
+			fetch('https://script.google.com/macros/s/AKfycbyq2MVCUgkSS6In3gfYJTlDy8ttSX8SjHqSgAPIunGYf4qf6DeJzyhh-fui5NQbmLBHTw/exec', {
 			  method: 'POST',
 			  headers: {
 				'Content-Type': 'text/plain;charset=utf-8',

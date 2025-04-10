@@ -729,7 +729,7 @@
             let reachProgramId = document.getElementById("reachProgram").value;
             let vendorId = document.getElementById("registeringVendor").value;
 			
-            let reachPopElement = document.getElementById("reachPopulation").value;
+            let reachPopElement = document.getElementById("reachPopulation");
 	    const selectedOptions = Array.from(reachPopElement.selectedOptions).map(opt => opt.value);
             const populationIdBlock = selectedOptions.join("_"); // combine all values with underscore
 			

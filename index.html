@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Attendee Registration Form</title>
+    <title>Market Attendee Registration Form</title>
 	<!-- Choices.js CDN -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 	<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
@@ -182,7 +182,7 @@
 <body>
     <div class="container" >
 		<div id="successMessage" class="success-message"></div>
-        <h2>Attendee Registration Form</h2>
+        <h2>Market Attendee Registration Form</h2>
         <form id="registrationForm" onsubmit="generateNeighborId(event)">
 			<div class="form-group">
                 <label for="date">Today's Date</label>
@@ -204,24 +204,29 @@
                 <label for="gender">Gender</label>
                 <select id="gender" name="gender" required>
                     <option value="">- Select Gender -</option>
-                    <option value="Woman">Woman</option>
-                    <option value="Man">Man</option>
-                    <option value="Transgender">Transgender</option>
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
                     <option value="Non-binary">Non-binary</option>
-                    <option value="Prefer not to respond">Prefer not to respond</option>
+                    <option value="Other">Other</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="race">Race/Ethnicity</label>
                 <select id="race" name="race" required>
                     <option value="">- Select Race -</option>
-                    <option value="Black/African-American">Black/African-American</option>
-                    <option value="White/Caucasian">White/Caucasian</option>
-                    <option value="Hispanic/Latine">Hispanic/Latine</option>
-                    <option value="Native American/Alaskan Native/Indigenous American">Native American/Alaskan Native/Indigenous American</option>
-                    <option value="Asian/Asian-American">Asian/Asian-American</option>
-					<option value="Middle Eastern/North African">Middle Eastern/North African</option>
+                    <option value="African/African-American/Black">African/African-American/Black</option>
+                    <option value="American Indian/Alaskan Native/Indigenous American">American Indian/Alaskan Native/Indigenous American</option>
+                    <option value="Caucasian/European/European-American/White">Caucasian/European/European-American/White</option>
+                    <option value="South Asian/South Asian-American">South Asian/South Asian-American</option>
+			<option value="East Asian/East Asian-American">East Asian/East Asian-American</option>
+                    <option value="Latine (Latino/a/x) or Hispanic">Latine (Latino/a/x) or Hispanic</option>
+					<option value="Native Hawaiian/Pacific Islander">Native Hawaiian/Pacific Islander</option>
+			<option value="Other">Other</option>
                 </select>
+				<div id="otherRaceDiv" class="hidden">
+					<label for="otherRace">Please specify </label>
+					<input type="text" id="otherRace" name="otherRace" placeholder="Enter other race">
+				</div>
             </div>
 			<div class="form-group">
                 <label for="nationality">Nationality</label>
@@ -373,20 +378,52 @@
                     <option value="No">No</option>
                 </select>
             </div>
+		<div class="form-group">
+                <label for="otherLang" class="no-global-star">What other langauages do you speak?</label>
+		<input list="languageOptions" name="otherLang" id="otherLang">
+	                <datalist id="languageOptions">
+			  <option value="Spanish">
+			  <option value="Chinese">
+			  <option value="Tagalog">
+			  <option value="Vietnamese">
+			  <option value="Arabic">
+			  <option value="French">
+			  <option value="Haitian Creole">
+			  <option value="Korean">
+			  <option value="Russian">
+			  <option value="Portuguese">
+			  <option value="Japanese">
+			  <option value="German">
+			  <option value="Somali">
+			  <option value="Swahili">
+			  <option value="Amharic">
+			  <option value="Oromo">
+			  <option value="Hindi">
+			  <option value="Urdu">
+			  <option value="Punjabi">
+			  <option value="Nepali">
+			  <option value="Bengali">
+			  <option value="Burmese">
+			  <option value="Karen">
+			  <option value="Rohingya">
+			  <option value="Navajo">
+			  <option value="Cherokee">
+			</datalist>
+            </div>
 			<div class="form-group">
-                <label for="reachProgram">Which REACH Program are you in?</label>
-                <select id="reachProgram" name="reachProgram" required>
-					<option value="">Select</option>
+                <label for="reachProgram">Which REACH Program is this event part of with?</label>
+                <select id="reachProgram" name="reachProgram" onchange="onOtherReachProgram()" required>
+					<option value="">- Select -</option>
                     <option value="00">Unknown</option>
                     <option value="01">None</option>
-                    <option value="10">REACHing Us Farmers Market</option>
-                    <option value="20">PGL CSA</option>
+                    <option value="10">PGL-REACH Farmers Market</option>
+                    <option value="20">Other</option>
                 </select>
             </div>
             <div class="form-group">
-                <label for="registeringVendor">Which Registering Vendor are you with?</label>
+                <label for="registeringVendor">Did any of the market vendors invite you to the market? If so, which one?</label>
                 <select id="registeringVendor" name="registeringVendor" required>
-					<option value="">Select</option>
+					<option value="">- Select -</option>
                     <option value="000">Unknown</option>
                     <option value="010">None</option>
                     <option value="100">PGL</option>
@@ -397,16 +434,21 @@
                 </select>
             </div>
 			<div class="form-group">
-                <label for="reachPopulation">Are you in any of these Marginalized Population?</label>
-                <select id="reachPopulation" name="reachPopulation" required>
-                    <option value="">Select</option>
+                <label for="reachPopulation">Does any of the following categories apply to the attendee or their household?</label>
+                <select id="reachPopulation" name="reachPopulation" multiple required>
+                    <option value="">- Select -</option>
                     <option value="0000">Unknown</option>
                     <option value="0100">None</option>
                     <option value="1000">Low-income</option>
                     <option value="2000">Immigrant</option>
-                    <option value="3000">BIPOC</option>
-                    <option value="4000">Low-income BIPOC</option>
-                    <option value="5000">BIPOC Immigrant</option>
+                    <option value="3000">Older Adult (65+)</option>
+                    <option value="4000">Unemployed</option>
+                    <option value="5000">No H.S diploma or equivalent</option>
+                    <option value="6000">Single-parent headed household</option>
+                    <option value="7000">Grandparent-headed household</option>
+                    <option value="8000">Person with disabilities</option>
+                    <option value="9000">Food insecure</option>
+                    <option value="9999">Other</option>
                 </select>
             </div>
             <div class="form-group">
@@ -415,6 +457,7 @@
                     <option value="">- Select -</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
+			<option value="Not yet- approved for today">Not yet- approved for today</option>
                 </select>
             </div>
 			<div class="form-group">
@@ -426,17 +469,29 @@
                     <option value="No">No</option>
                 </select>
 				<label for="wallace">Wallace Clinic</label>
-                <select id="wallace" name="wallace" required>
+                <select id="wallace" name="wallace" onchange="toggleWallaceAmount()" required>
                     <option value="">- Select -</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
+				<div class="form-group hidden" id="wallaceCodeDiv">
+                <label>If Yes, give the 4-digit code</label>
+                <input type="number" name="wallaceCode" id="wallaceCode">
+            </div>
+				<div class="form-group hidden" id="wallaceAmountDiv">
+                <label>If Yes, Amount</label>
+                <input type="number" name="wallaceAmount" id="wallaceAmount" value="25" readonly>
+            </div>
 				<label for="ofb">Oregon Food Bank</label>
-                <select id="ofb" name="ofb" required>
+                <select id="ofb" name="ofb" onchange="toggleOFBAmount()" required>
                     <option value="">- Select -</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
+		<div class="form-group hidden" id="ofbAmountDiv">
+	                <label>If Yes, Amount</label>
+	                <input type="number" name="ofbAmount" id="ofbAmount">
+            	</div>
             </div>
 			<div class="form-group">
 				<label for="pglBucks" class="label-required no-global-star">
@@ -480,6 +535,26 @@
             amountDiv.classList.toggle('hidden', select.value === 'No');
 			amountInput.required = (select.value === "Yes");
         }
+
+	function toggleWallaceAmount() {
+            const selectWallace = document.getElementById('wallace');
+            const wallaceAmountDiv = document.getElementById('wallaceAmountDiv');
+			const wallaceAmountInput = document.getElementById('wallaceAmount');
+		const wallaceCodeDiv = document.getElementById('wallaceCodeDiv');
+			const wallaceCodeInput = document.getElementById('wallaceCode');
+            wallaceAmountDiv.classList.toggle('hidden', selectWallace.value === 'No');
+			wallaceAmountInput.required = (selectWallace.value === "Yes");
+		wallaceCodeDiv.classList.toggle('hidden', selectWallace.value === 'No');
+			wallaceCodeInput.required = (selectWallace.value === "Yes");
+        }
+
+	function toggleOFBAmount() {
+            const selectOFB = document.getElementById('ofb');
+            const ofbAmountDiv = document.getElementById('ofbAmountDiv');
+			const ofbAmountInput = document.getElementById('ofbAmount');
+            ofbAmountDiv.classList.toggle('hidden', selectOFB.value === 'No');
+			ofbAmountInput.required = (selectOFB.value === "Yes");
+        }
 		
 		document.addEventListener('DOMContentLoaded', function () {
 					new Choices('#nationality', {
@@ -502,6 +577,13 @@
 							otherInput.required = false;
 						}
 					});
+
+					new Choices('#reachPopulation', {
+						removeItemButton: true,
+						placeholderValue: 'Select Category',
+						searchPlaceholderValue: 'Type to search...',
+						shouldSort: false
+					});
 					
 					new Choices('#state', {
 						searchEnabled: true,
@@ -512,12 +594,27 @@
 						searchEnabled: true,
 						shouldSort: false
 					});
+
+					const otherRaceDiv = document.getElementById('otherRaceDiv');
+					const otherRaceInput = document.getElementById('otherRace');
+
+					document.querySelector('#race').addEventListener('change', function () {
+						const selectedOptions = Array.from(this.selectedOptions).map(opt => opt.value);
+						if (selectedOptions.includes('Other')) {
+							otherRaceDiv.classList.remove('hidden');
+							otherRaceInput.required = true;
+						} else {
+							otherRaceDiv.classList.add('hidden');
+							otherRaceInput.required = false;
+						}
+					});
 				
 					new Choices('#gender', {
 						searchEnabled: true,
 						shouldSort: false
 					});
-				
+
+													
 					const householdInput = document.getElementById("householdSize");
 					const section = document.getElementById("familySection");
 					const container = document.getElementById("familyMembersContainer");
@@ -631,18 +728,35 @@
 
             let reachProgramId = document.getElementById("reachProgram").value;
             let vendorId = document.getElementById("registeringVendor").value;
-            let populationId = document.getElementById("reachPopulation").value;
+			
+            let reachPopElement = document.getElementById("reachPopulation").value;
+	    const selectedOptions = Array.from(reachPopElement.selectedOptions).map(opt => opt.value);
+            const populationIdBlock = selectedOptions.join("_"); // combine all values with underscore
+			
             let neighborNumber = Math.floor(10000 + Math.random() * 90000);
             let dateField = document.getElementById("todayDate").value;
             
             let date = new Date(dateField + "T00:00:00"); // Fix timezone issue
             let formattedDate = ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + date.getFullYear();
 
-            let neighborId = `REACH-${reachProgramId}-${vendorId}-${populationId}-${neighborNumber}-${formattedDate}`;
+            let neighborId = `REACH-${reachProgramId}-${vendorId}-${populationIdBlock}-${neighborNumber}-${formattedDate}`;
 			document.getElementById("neighborid").value = neighborId;
 			
 			const form = document.getElementById("registrationForm");
             const formData = new FormData(form);
+		// Get nationality properly from multiselect
+		const nationalitySelect = document.getElementById("nationality");
+		const allNationalities = Array.from(nationalitySelect.selectedOptions).map(opt => opt.value);
+		
+		// Update FormData to include the full list as a single string (comma separated)
+		formData.set("nationality", allNationalities.join(", "));
+
+		// Get nationality properly from multiselect
+		const reachPopulationSelect = document.getElementById("reachPopulation");
+		const allReachPopulation = Array.from(reachPopulationSelect.selectedOptions).map(opt => opt.value);
+		
+		// Update FormData to include the full list as a single string (comma separated)
+		formData.set("reachPopulation", allReachPopulation.join(", "));
 			sendData(formData, neighborId);
 			
 		}
@@ -662,7 +776,7 @@
 			document.getElementById("registrationForm").reset();
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 
-			fetch('https://script.google.com/macros/s/AKfycbxyfxv3ZSbQl428bwD7CeLf8VRzgglZvPwYtauTaF63cEsloHI0dubjcAJS8zsgYfwBEw/exec', {
+			fetch('https://script.google.com/macros/s/AKfycbyZcp01J2MdUnyzwq_KuKVy0TY0FbbkTZC7jMM6KE3ehjvTmZy674EoDUUiVu1ghkhQQg/exec', {
 			  method: 'POST',
 			  headers: {
 				'Content-Type': 'text/plain;charset=utf-8',

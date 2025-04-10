@@ -412,7 +412,7 @@
             </div>
 			<div class="form-group">
                 <label for="reachProgram">Which REACH Program is this event part of with?</label>
-                <select id="reachProgram" name="reachProgram" onchange="onOtherReachProgram()" required>
+                <select id="reachProgram" name="reachProgram" required>
 					<option value="">- Select -</option>
                     <option value="00">Unknown</option>
                     <option value="01">None</option>
@@ -696,7 +696,7 @@
             }
         }
 		
-		function generateNeighborId(event) {
+		function generateNeighborId(event) {debugger;
             event.preventDefault();
             
             const reachProgramMapping = {

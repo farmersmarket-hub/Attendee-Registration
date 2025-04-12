@@ -454,11 +454,12 @@
                     <option value="9000">Food insecure</option>
                     <option value="9999">Other</option>
                 </select>
-            </div>
-		<div class="form-group hidden" id="otherReachPopulationDiv">
+				<div class="hidden" id="otherReachPopulationDiv">
                 <label>Please Specify</label>
-                <input type="text" name="otherReachPopulation" id="otherReachPopulation">
+                <input type="text" name="otherReachPopulation" id="otherReachPopulation" placeholder="Enter Other Category">
             </div>
+            </div>
+		
             <div class="form-group">
                 <label for="csaRecipient">Are you currently enrolled as a PGL CSA recipient?</label>
                 <select id="csaRecipient" name="csaRecipient" required>
@@ -632,7 +633,7 @@
 					const otherReachPopulationDiv = document.getElementById('otherReachPopulationDiv');
 					const otherReachPopulationInput = document.getElementById('otherReachPopulation');
 
-					document.querySelector('#nationality').addEventListener('change', function () {
+					document.querySelector('#reachPopulation').addEventListener('change', function () {
 						const selectedOptions = Array.from(this.selectedOptions).map(opt => opt.value);
 						if (selectedOptions.includes('Other')) {
 							otherReachPopulationDiv.classList.remove('hidden');

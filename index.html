@@ -570,8 +570,8 @@
             const selectReachProgram = document.getElementById('reachProgram');
             const otherReachProgramDiv = document.getElementById('otherReachProgramDiv');
 			const otherReachProgramInput = document.getElementById('otherReachProgram');
-            otherReachProgramDiv.classList.toggle('hidden', selectReachProgram.value === '20');
-			otherReachProgramInput.required = (selectReachProgram.value === "20");
+            otherReachProgramDiv.classList.toggle('hidden', selectReachProgram.value !== '20');
+			otherReachProgramInput.required = (selectReachProgram.value !== "20");
         }
 
 	function validateCurrencyInput(input) {

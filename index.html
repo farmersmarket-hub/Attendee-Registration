@@ -635,7 +635,7 @@
 
 					document.querySelector('#reachPopulation').addEventListener('change', function () {
 						const selectedOptions = Array.from(this.selectedOptions).map(opt => opt.value);
-						if (selectedOptions.includes('Other')) {
+						if (selectedOptions.includes('9999')) {
 							otherReachPopulationDiv.classList.remove('hidden');
 							otherReachPopulationInput.required = true;
 						} else {

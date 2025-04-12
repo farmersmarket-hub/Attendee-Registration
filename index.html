@@ -488,7 +488,7 @@
             </div>
 				<div class="form-group hidden" id="wallaceAmountDiv">
                 <label>If Yes, Amount</label>
-                <input type="number" name="wallaceAmount" id="wallaceAmount" value="25" readonly>
+                <input type="text" name="wallaceAmount" id="wallaceAmount" value="$25.00" readonly>
             </div>
 				<label for="ofb">Oregon Food Bank</label>
                 <select id="ofb" name="ofb" onchange="toggleOFBAmount()" required>
@@ -498,7 +498,7 @@
                 </select>
 		<div class="form-group hidden" id="ofbAmountDiv">
 	                <label>If Yes, Amount</label>
-	                <input type="number" name="ofbAmount" id="ofbAmount">
+	                <input type="number" name="ofbAmount" id="ofbAmount" class="currency-input" title="Enter amount in format: $000.00" oninput="validateCurrencyInput(this)" onblur="formatCurrency(this)" data-error="Enter amount in format: $000.00">
             	</div>
             </div>
 			<div class="form-group">
@@ -514,7 +514,7 @@
             </div>
 			<div class="form-group hidden" id="pglAmountDiv">
                 <label>If Yes, Amount</label>
-                <input type="number" name="pglAmount" id="pglAmount">
+                <input type="number" name="pglAmount" id="pglAmount" class="currency-input" title="Enter amount in format: $000.00" oninput="validateCurrencyInput(this)" onblur="formatCurrency(this)" data-error="Enter amount in format: $000.00">
             </div>
 			<input type="hidden" name="neighborid" id="neighborid">
 			<input type="hidden" name="attendeeId" id="attendeeId">
@@ -572,6 +572,33 @@
             otherReachProgramDiv.classList.toggle('hidden', selectReachProgram.value === 'No');
 			otherReachProgramInput.required = (selectReachProgram.value === "Yes");
         }
+
+	function validateCurrencyInput(input) {
+			const value = input.value;
+			const regex = /^\$\d{1,3}(\.\d{2})?$/;
+			
+			// If it's empty or doesn't match pattern, show custom error
+			if (value && !regex.test(value)) {
+			  input.setCustomValidity(input.getAttribute('data-error'));
+			  input.reportValidity();  // Show error immediately
+			} else {
+			  input.setCustomValidity('');
+			}
+	    }
+
+	    function formatCurrency(input) {
+			// Allow plain numbers like 123.45 → $123.45
+			const plainRegex = /^\d+(\.\d{1,2})?$/;
+			const formattedRegex = /^\$\d+(\.\d{2})?$/;
+
+			if (plainRegex.test(input.value)) {
+			  let num = parseFloat(input.value).toFixed(2);
+			  input.value = `$${num}`;
+			}
+
+			// Revalidate in case blur fixes format
+			validateCurrencyInput(input);
+	    }
 		
 		document.addEventListener('DOMContentLoaded', function () {
 					new Choices('#nationality', {

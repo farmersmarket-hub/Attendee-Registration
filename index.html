@@ -412,13 +412,17 @@
             </div>
 			<div class="form-group">
                 <label for="reachProgram">Which REACH Program is this event part of with?</label>
-                <select id="reachProgram" name="reachProgram" required>
+                <select id="reachProgram" name="reachProgram" onchange="toggleOtherReachProgram()" required>
 					<option value="">- Select -</option>
                     <option value="00">Unknown</option>
                     <option value="01">None</option>
                     <option value="10">PGL-REACH Farmers Market</option>
                     <option value="20">Other</option>
                 </select>
+            </div>
+		<div class="form-group hidden" id="otherReachProgramDiv">
+                <label>Please Specify</label>
+                <input type="text" name="otherReachProgram" id="otherReachProgram">
             </div>
             <div class="form-group">
                 <label for="registeringVendor">Did any of the market vendors invite you to the market? If so, which one?</label>
@@ -450,6 +454,10 @@
                     <option value="9000">Food insecure</option>
                     <option value="9999">Other</option>
                 </select>
+            </div>
+		<div class="form-group hidden" id="otherReachPopulationDiv">
+                <label>Please Specify</label>
+                <input type="text" name="otherReachPopulation" id="otherReachPopulation">
             </div>
             <div class="form-group">
                 <label for="csaRecipient">Are you currently enrolled as a PGL CSA recipient?</label>
@@ -509,6 +517,7 @@
                 <input type="number" name="pglAmount" id="pglAmount">
             </div>
 			<input type="hidden" name="neighborid" id="neighborid">
+			<input type="hidden" name="attendeeId" id="attendeeId">
             <button type="submit">Register</button>
         </form>
     </div>
@@ -555,6 +564,14 @@
             ofbAmountDiv.classList.toggle('hidden', selectOFB.value === 'No');
 			ofbAmountInput.required = (selectOFB.value === "Yes");
         }
+
+	function toggleOtherReachProgram() {
+            const selectReachProgram = document.getElementById('reachProgram');
+            const otherReachProgramDiv = document.getElementById('otherReachProgramDiv');
+			const otherReachProgramInput = document.getElementById('otherReachProgram');
+            otherReachProgramDiv.classList.toggle('hidden', selectReachProgram.value === 'No');
+			otherReachProgramInput.required = (selectReachProgram.value === "Yes");
+        }
 		
 		document.addEventListener('DOMContentLoaded', function () {
 					new Choices('#nationality', {
@@ -583,6 +600,20 @@
 						placeholderValue: 'Select Category',
 						searchPlaceholderValue: 'Type to search...',
 						shouldSort: false
+					});
+
+					const otherReachPopulationDiv = document.getElementById('otherReachPopulationDiv');
+					const otherReachPopulationInput = document.getElementById('otherReachPopulation');
+
+					document.querySelector('#nationality').addEventListener('change', function () {
+						const selectedOptions = Array.from(this.selectedOptions).map(opt => opt.value);
+						if (selectedOptions.includes('Other')) {
+							otherReachPopulationDiv.classList.remove('hidden');
+							otherReachPopulationInput.required = true;
+						} else {
+							otherReachPopulationDiv.classList.add('hidden');
+							otherReachPopulationInput.required = false;
+						}
 					});
 					
 					new Choices('#state', {
@@ -696,7 +727,7 @@
             }
         }
 		
-		function generateNeighborId(event) {debugger;
+		function generateNeighborId(event) {
             event.preventDefault();
             
             const reachProgramMapping = {
@@ -739,8 +770,9 @@
             let date = new Date(dateField + "T00:00:00"); // Fix timezone issue
             let formattedDate = ("0" + (date.getMonth() + 1)).slice(-2) + ("0" + date.getDate()).slice(-2) + date.getFullYear();
 
-            let neighborId = `REACH-${reachProgramId}-${vendorId}-${populationIdBlock}-${neighborNumber}-${formattedDate}`;
+            let neighborId = `REACH-${reachProgramId}-${vendorId}-${populationIdBlock}-${neighborNumber}`;
 			document.getElementById("neighborid").value = neighborId;
+			document.getElementById("attendeeId").value = neighborNumber;
 			
 			const form = document.getElementById("registrationForm");
             const formData = new FormData(form);
@@ -776,7 +808,7 @@
 			document.getElementById("registrationForm").reset();
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 
-			fetch('https://script.google.com/macros/s/AKfycbyZcp01J2MdUnyzwq_KuKVy0TY0FbbkTZC7jMM6KE3ehjvTmZy674EoDUUiVu1ghkhQQg/exec', {
+			fetch('https://script.google.com/macros/s/AKfycbw3lWPWS7YLgyJ1z5zFGbc6YKim1VRaeSP43D8UB_rjLvqXYNOK8q0bg-NAesS8h9Oxvw/exec', {
 			  method: 'POST',
 			  headers: {
 				'Content-Type': 'text/plain;charset=utf-8',

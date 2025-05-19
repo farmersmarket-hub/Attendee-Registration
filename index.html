@@ -7,6 +7,8 @@
 	<!-- Choices.js CDN -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 	<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 	
     <style>
         body {
@@ -760,6 +762,72 @@
                 inputField.setCustomValidity('');
             }
         }
+
+	async function generateQRCodePDF(neighborId, attendeeId, formData) {
+      const url = `https://farmersmarket-hub.github.io/Transaction/?neighborid=${encodeURIComponent(neighborId)}`;
+      const qrDataURL = await QRCode.toDataURL(url);
+
+      const firstName = formData.firstName || '';
+      const lastName = formData.lastName || '';
+      const householdSize = parseInt(formData.householdSize || "1");
+
+      let memberLines = "";
+      for (let i = 1; i < householdSize; i++) {
+        const fname = formData[`member${i}FirstName`] || '';
+        const lname = formData[`member${i}LastName`] || '';
+        if (fname || lname) {
+          memberLines += `- ${fname} ${lname}\n`;
+        }
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.addImage(qrDataURL, "PNG", 55, 20, 100, 100);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text("Market Attendee QR Code", 105, 130, { align: "center" });
+
+      let y = 150;
+      doc.setFontSize(12);
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Attendee Name:", 20, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(`${firstName} ${lastName}`, 60, y);
+      y += 10;
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Attendee ID:", 20, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(attendeeId.toString(), 60, y);
+      y += 10;
+
+      doc.setFont("helvetica", "bold");
+      doc.text("Neighbor ID:", 20, y);
+      doc.setFont("helvetica", "normal");
+      doc.text(neighborId, 60, y);
+      y += 10;
+
+      if (householdSize > 1 && memberLines.trim()) {
+        doc.setFont("helvetica", "bold");
+        doc.text("Household Members:", 20, y);
+        y += 10;
+        doc.setFont("helvetica", "normal");
+        const splitMembers = doc.splitTextToSize(memberLines.trim(), 170);
+        doc.text(splitMembers, 25, y);
+      }
+
+      doc.save(`QR_${attendeeId}.pdf`);
+
+      return new Promise(resolve => {
+        doc.output("blob").then(blob => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result.split(',')[1]);
+          reader.readAsDataURL(blob);
+        });
+      });
+    }
 		
 		function generateNeighborId(event) {
             event.preventDefault();
@@ -823,26 +891,27 @@
 		
 		// Update FormData to include the full list as a single string (comma separated)
 		formData.set("reachPopulation", allReachPopulation.join(", "));
-			sendData(formData, neighborId);
+			const data = {};
+      			formData.forEach((value, key) => {
+        		data[key] = value;
+      		});
+			generateQRCodePDF(neighborId, neighborNumber, data).then(base64pdf => {
+        		data.qrPdfBase64 = base64pdf;
+        		sendData(data);
+      			});
 			
 		}
 		
-		function sendData(formData, neighborid) {
-			const data = {};
-			formData.forEach((value, key) => {
-			  data[key] = value;
-			});
-			
-			let neighborId = neighborid;
+		function sendData(data) {
 			
 			let successMessage = document.getElementById("successMessage");
-			successMessage.innerText = `Registration successful! Your Neighbor ID: ${neighborId}`;
+			successMessage.innerText = `Registration successful! Your Neighbor ID: ${data.neighborid}`;
 			successMessage.style.display = "block";
 			  
 			document.getElementById("registrationForm").reset();
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 
-			fetch('https://script.google.com/macros/s/AKfycbxzfQFaCBhz-UNGC9UVqCEq2bjds7oRLUwjz86EV2xhYNx-mK7K397ZP30xZf9Z2U_yWw/exec', {
+			fetch('https://script.google.com/macros/s/AKfycbxAN8mjhqJMkOKwtXslQl_XIcFErXUGebvp_rNk-eDWihZAaKXd-ZnPjSp2gBwFYJwSRQ/exec', {
 			  method: 'POST',
 			  headers: {
 				'Content-Type': 'text/plain;charset=utf-8',

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Attendee Registration Form</title>
+    <title>Attendee Registration Form</title>
 	<!-- Choices.js CDN -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
 	<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
@@ -184,7 +184,7 @@
 <body>
     <div class="container" >
 		<div id="successMessage" class="success-message"></div>
-        <h2>Market Attendee Registration Form</h2>
+        <h2>Attendee Registration Form</h2>
         <form id="registrationForm" onsubmit="generateNeighborId(event)">
 			<div class="form-group">
                 <label for="date">Today's Date</label>
@@ -199,8 +199,8 @@
                 <input type="text" id="lastName" name="lastName" required oninput="validateInput(event, /^[A-Za-z\s]*$/)" data-error="Only alphabets are allowed.">
             </div>
             <div class="form-group">
-                <label for="age">Age</label>
-                <input type="number" id="age" name="age" required>
+                <label for="age" class="no-global-star">Date of Birth</label>
+                <input type="date" id="dob" name="dob" >
             </div>
             <div class="form-group">
                 <label for="gender">Gender</label>
@@ -232,6 +232,7 @@
             </div>
 			<div class="form-group">
                 <label for="nationality">Nationality</label>
+		<span class="hint-text">(Type the nationality name to search for it in the list. You can add multiple nationalities.)</span>
                 <select id="nationality" name="nationality" multiple required>
 					<option value="U.S.">U.S.</option>
 					<option value="Japanese">Japanese</option>
@@ -341,15 +342,15 @@
                 <input type="text" id="zip" name="zip" required oninput="validateInput(event, /^\d{5}(-\d{4})?$/)" data-error="Enter a valid zip code (e.g., 12345 or 12345-6789).">
             </div>
 			<div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" required>
+                <label for="email" class="no-global-star">Email Address</label>
+                <input type="email" id="email" name="email">
             </div>
 			<div class="form-group">
                 <label for="contact">Contact Phone Number</label>
                 <input type="text" id="contact" name="contact" required>
             </div>
 			<div class="form-group">
-                <label for="regType">Individual/Family Registration?</label>
+                <label for="regType">Are you registering as an Individual or a Family?</label>
                 <select id="regType" name="regType" required>
                     <option value="">- Select -</option>
                     <option value="Individual">Individual</option>
@@ -373,7 +374,7 @@
 				</div>
 			</div>
             <div class="form-group">
-                <label for="engLang">Is English your second language</label>
+                <label for="engLang">Is English your first or primary language?</label>
                 <select id="engLang" name="engLang" required>
                     <option value="">- Select -</option>
                     <option value="Yes">Yes</option>
@@ -381,9 +382,10 @@
                 </select>
             </div>
 		<div class="form-group">
-                <label for="otherLang" class="no-global-star">What other langauages do you speak?</label>
+                <label for="otherLang" class="no-global-star">Do you speak any other languages? If so, select all that apply</label>
 		<input list="languageOptions" name="otherLang" id="otherLang">
 	                <datalist id="languageOptions">
+			  <option value="No other languages spoken">
 			  <option value="Spanish">
 			  <option value="Chinese">
 			  <option value="Tagalog">
@@ -413,7 +415,7 @@
 			</datalist>
             </div>
 			<div class="form-group">
-                <label for="reachProgram">Which REACH Program is this event part of with?</label>
+                <label for="reachProgram">Which program or event is this registration associated with?</label>
                 <select id="reachProgram" name="reachProgram" onchange="toggleOtherReachProgram()" required>
 					<option value="">- Select -</option>
                     <option value="00">Unknown</option>
@@ -427,16 +429,19 @@
                 <input type="text" name="otherReachProgram" id="otherReachProgram" placeholder="Enter Other REACH Program">
             </div>
             <div class="form-group">
-                <label for="registeringVendor">Did any of the market vendors invite you to the market? If so, which one?</label>
+                <label for="registeringVendor">How did you hear about the People's Market?</label>
                 <select id="registeringVendor" name="registeringVendor" required>
 					<option value="">- Select -</option>
-                    <option value="000">Unknown</option>
-                    <option value="010">None</option>
-                    <option value="100">PGL</option>
-                    <option value="200">Mr. Farms- Maxi Hernandez</option>
-                    <option value="300">Sofia Farm- Mohammad</option>
-                    <option value="400">Rohingya Burmese Farm- Ali Johar</option>
-                    <option value="500">Yoshi Berry - Ishmail Santos</option>
+                    <option value="Instagram">Instagram</option>
+                    <option value="Facebook">Facebook</option>
+                    <option value="Other Social Media">Other Social Media</option>
+                    <option value="REACH">REACH</option>
+                    <option value="ACHIEVE Coalition">ACHIEVE Coalition</option>
+                    <option value="PGL Event">PGL Event</option>
+                    <option value="A Current Market Vendor">A Current Market Vendor</option>
+		    <option value="Other Word of Mouth">Other Word of Mouth</option>
+		    <option value="I attended Last Year">I attended Last Year</option>
+		    <option value="Other">Other</option>
                 </select>
             </div>
 			<div class="form-group">
@@ -461,6 +466,15 @@
                 <input type="text" name="otherReachPopulation" id="otherReachPopulation" placeholder="Enter Other Category">
             </div>
             </div>
+
+	    <div class="form-group">
+                <label for="lastYearAttendance">Did you or anyone from your household attend this market last year?</label>
+                <select id="lastYearAttendance" name="lastYearAttendance" required>
+                    <option value="">- Select -</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
+            </div>
 		
             <div class="form-group">
                 <label for="csaRecipient">Are you currently enrolled as a PGL CSA recipient?</label>
@@ -474,11 +488,19 @@
 			<div class="form-group">
                 <label for="programs">Are you/your family enrolled in any of the following programs?</label>
 				<label for="snap">SNAP</label>
-                <select id="snap" name="snap" required>
+                <select id="snap" name="snap" onchange="toggleSnapAmount()" required>
                     <option value="">- Select -</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
+			<div class="form-group hidden" id="snapAmountDiv">
+	                <label>If Yes, Amount</label>
+	                <input type="text" name="snapAmount" id="snapAmount" class="currency-input" title="Enter amount in format: $000.00" oninput="validateCurrencyInput(this)" onblur="formatCurrency(this)" data-error="Enter amount in format: $000.00">
+			</div>
+			<div class="form-group hidden" id="snapCodeDiv">
+			<label>Also, Enter the last 4 digits of your SNAP number</label>
+                	<input type="text" name="snapCode" id="snapCode" >
+			</div>
 				<label for="wallace">Wallace Clinic</label>
                 <select id="wallace" name="wallace" onchange="toggleWallaceAmount()" required>
                     <option value="">- Select -</option>
@@ -486,14 +508,18 @@
                     <option value="No">No</option>
                 </select>
 				<div class="form-group hidden" id="wallaceCodeDiv">
-                <label>If Yes, give the 4-digit code</label>
-                <input type="number" name="wallaceCode" id="wallaceCode">
+                <label>Verification completed?</label>
+                <select name="wallaceCode" id="wallaceCode">
+			<option value="">-Select-</option>
+			<option value="Yes">Yes</option>
+			<option value="No">No</option>
+		</select>
             </div>
 				<div class="form-group hidden" id="wallaceAmountDiv">
                 <label>If Yes, Amount</label>
                 <input type="text" name="wallaceAmount" id="wallaceAmount" readonly>
             </div>
-				<label for="ofb">Oregon Food Bank</label>
+				<label for="ofb">Community Bucks</label>
                 <select id="ofb" name="ofb" onchange="toggleOFBAmount()" required>
                     <option value="">- Select -</option>
                     <option value="Yes">Yes</option>
@@ -506,7 +532,7 @@
             </div>
 			<div class="form-group">
 				<label for="pglBucks" class="label-required no-global-star">
-				<span class="main-label">Do you have any PGL Bucks with you today?</span>
+				<span class="main-label">Did you bring any PGL Bucks?</span>
 				<span class="hint-text">(Yes, only if you currently have bucks in hand to use)</span>
 				</label>
                 <select id="pglBucks" name="pglBucks" onchange="togglePGLAmount()" required>
@@ -519,6 +545,10 @@
                 <label>If Yes, Amount</label>
                 <input type="text" name="pglAmount" id="pglAmount" class="currency-input" title="Enter amount in format: $000.00" oninput="validateCurrencyInput(this)" onblur="formatCurrency(this)" data-error="Enter amount in format: $000.00">
             </div>
+		<div class="form-group">
+		<label for="comments" class="no-global-star">Additional Notes or Comments</label>
+                <textarea class="w-full p-2 border rounded bg-white" name="comments" id="comments" rows="3"></textarea>
+		</div>
 			<input type="hidden" name="neighborid" id="neighborid">
 			<input type="hidden" name="attendeeId" id="attendeeId">
             <button type="submit">Register</button>
@@ -563,6 +593,19 @@
 		} else {
 		    wallaceAmountInput.value = "";
 		}
+
+        }
+
+	function toggleSnapAmount() {
+            const selectSnap = document.getElementById('snap');
+            const snapAmountDiv = document.getElementById('snapAmountDiv');
+			const snapAmountInput = document.getElementById('snapAmount');
+		const snapCodeDiv = document.getElementById('snapCodeDiv');
+			const snapCodeInput = document.getElementById('snapCode');
+            snapAmountDiv.classList.toggle('hidden', selectSnap.value === 'No');
+			snapAmountInput.required = (selectSnap.value === "Yes");
+		snapCodeDiv.classList.toggle('hidden', selectSnap.value === 'No');
+			snapCodeInput.required = (selectSnap.value === "Yes");
 
         }
 
@@ -733,13 +776,13 @@
 							  </div>
 
 							  <div class="form-group">
-								<label for="member${i}Age">
-								  Age:
+								<label for="member${i}Dob" class="no-global-star">
+								  Date of Birth:
 								  <span class="tooltip">i
-									<span class="tooltiptext">Member must be over the age of 2</span>
+									<span class="tooltiptext">Member must be over the age of 10</span>
 								  </span>
 								</label>
-								<input type="number" name="member${i}Age" id="member${i}Age" min="3" required
+								<input type="date" name="member${i}Dob" id="member${i}Dob"
 								  oninvalid="this.setCustomValidity('Age must be at least 3')"
 								  oninput="this.setCustomValidity('')">
 							  </div>

@@ -432,16 +432,16 @@
                 <label for="registeringVendor">How did you hear about the People's Market?</label>
                 <select id="registeringVendor" name="registeringVendor" required>
 					<option value="">- Select -</option>
-                    <option value="Instagram">Instagram</option>
-                    <option value="Facebook">Facebook</option>
-                    <option value="Other Social Media">Other Social Media</option>
-                    <option value="REACH">REACH</option>
-                    <option value="ACHIEVE Coalition">ACHIEVE Coalition</option>
-                    <option value="PGL Event">PGL Event</option>
-                    <option value="A Current Market Vendor">A Current Market Vendor</option>
-		    <option value="Other Word of Mouth">Other Word of Mouth</option>
-		    <option value="I attended Last Year">I attended Last Year</option>
-		    <option value="Other">Other</option>
+                    <option value="000">Instagram</option>
+                    <option value="100">Facebook</option>
+                    <option value="200">Other Social Media</option>
+                    <option value="300">REACH</option>
+                    <option value="400">ACHIEVE Coalition</option>
+                    <option value="500">PGL Event</option>
+                    <option value="600">A Current Market Vendor</option>
+		    <option value="700">Other Word of Mouth</option>
+		    <option value="800">I attended Last Year</option>
+		    <option value="900">Other</option>
                 </select>
             </div>
 			<div class="form-group">
@@ -883,6 +883,7 @@
 	const walletUrl = `https://farmersmarket-hub.github.io/Mobile-Wallet/?neighborid=${encodeURIComponent(neighborId)}`;
         doc.setFont("helvetica", "normal");
         doc.text(walletUrl, 60, y);
+        y += 10;
 
       doc.save(`QR_${attendeeId}.pdf`);
 

@@ -497,7 +497,7 @@
 	                <label>If Yes, Amount</label>
 	                <input type="text" name="snapAmount" id="snapAmount" class="currency-input" title="Enter amount in format: $000.00" oninput="validateCurrencyInput(this)" onblur="formatCurrency(this)" onchange="fillSnapPlusBucks()" data-error="Enter amount in format: $000.00">
 			<input type="text" name="snapPlusAmount" id="snapPlusAmount" class="currency-input hidden">
-			<input type="text" name="snapTokens" id="snapTokens" class="hidden">
+			<input type="text" name="snapTokensAmount" id="snapTokens" class="hidden">
 			</div>
 			<div class="form-group hidden" id="snapCodeDiv">
 			<label>Also, Enter the last 4 digits of your SNAP number</label>
@@ -993,7 +993,7 @@
 			  // Handle the error here
 			});
 
-			fetch('https://script.google.com/macros/s/AKfycbyVqV2F8XZm-xt_hbTacKQgdgQLF8UmYhJ9iSMSQmdiw6_U_4teEY0jun-BzTLkMtRt/exec', {
+			fetch('https://script.google.com/macros/s/AKfycbzittCOXZ2MHwWkNap9kj7KXlWrgG-CaTAzkowjrZ4qnp5cMxgEcxBQZpTUZotmraeg/exec', {
 			  method: 'POST',
 			  headers: {
 				'Content-Type': 'text/plain;charset=utf-8',

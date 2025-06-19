@@ -495,7 +495,9 @@
                 </select>
 			<div class="form-group hidden" id="snapAmountDiv">
 	                <label>If Yes, Amount</label>
-	                <input type="text" name="snapAmount" id="snapAmount" class="currency-input" title="Enter amount in format: $000.00" oninput="validateCurrencyInput(this)" onblur="formatCurrency(this)" data-error="Enter amount in format: $000.00">
+	                <input type="text" name="snapAmount" id="snapAmount" class="currency-input" title="Enter amount in format: $000.00" oninput="validateCurrencyInput(this)" onblur="formatCurrency(this)" onchange="fillSnapPlusBucks()" data-error="Enter amount in format: $000.00">
+			<input type="text" name="snapPlusAmount" id="snapPlusAmount" class="currency-input hidden">
+			<input type="text" name="snapTokens" id="snapTokens" class="hidden">
 			</div>
 			<div class="form-group hidden" id="snapCodeDiv">
 			<label>Also, Enter the last 4 digits of your SNAP number</label>
@@ -796,6 +798,22 @@
 						}
 					});
 				});
+
+	function parseDollar(val) {
+	  if (!val) return 0;
+	  const numeric = val.replace(/[^\d.-]/g, '');
+	  return isNaN(parseFloat(numeric)) ? 0 : parseFloat(numeric);
+	}
+
+	function fillSnapPlusBucks() {
+	  const snapTokens = document.getElementById('snapTokens');
+	  const snapAmount = document.getElementById('snapAmount');
+	  const snapPlusAmount = document.getElementById('snapPlusAmount');
+	  
+	  const snap = parseDollar((snapAmount.value));
+	  snapPlusAmount.value = `$${(snap * 2).toFixed(2)}`;
+	  snapTokens.value = parseInt(snap);
+	}
 	
         function validateInput(event, pattern) {
             let inputField = event.target;
@@ -860,15 +878,19 @@
         const splitMembers = doc.splitTextToSize(memberLines.trim(), 170);
         doc.text(splitMembers, 25, y);
       }
+	doc.setFont("helvetica", "bold");
+        doc.text("Mobile Wallet URL:", 20, y);
+	const walletUrl = `https://farmersmarket-hub.github.io/Mobile-Wallet/?neighborid=${encodeURIComponent(neighborId)}`;
+        doc.setFont("helvetica", "normal");
+        doc.text(walletUrl, 60, y);
 
       doc.save(`QR_${attendeeId}.pdf`);
 
       return new Promise(resolve => {
-        doc.output("blob").then(blob => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result.split(',')[1]);
-          reader.readAsDataURL(blob);
-        });
+	  const blob = doc.output("blob");
+	  const reader = new FileReader();
+	  reader.onloadend = () => resolve(reader.result.split(',')[1]);
+	  reader.readAsDataURL(blob);
       });
     }
 		
@@ -954,7 +976,23 @@
 			document.getElementById("registrationForm").reset();
 			window.scrollTo({ top: 0, behavior: 'smooth' });
 
-			fetch('https://script.google.com/macros/s/AKfycbyrGOFOpf4ZHSI4_2yN_h3z8ZvqGLKhqi1eCP0hjWwyqdQzYSbOQ6Ca4tyjRUz-FOPq/exec', {
+			fetch('https://script.google.com/macros/s/AKfycbw6BXU-SR0efSVGPXU7AvgDz41ZmUPi40KGkkFTfwiVpom3-a1toNaHut6-7dkW-SMapw/exec', {
+			  method: 'POST',
+			  headers: {
+				'Content-Type': 'text/plain;charset=utf-8',
+			  },
+			  body: JSON.stringify(data),
+			})
+			.then(response => response.text())
+			.then(result => {
+			  console.log('Success:', result);
+			})
+			.catch(error => {
+			  console.error('Error:', error);
+			  // Handle the error here
+			});
+
+			fetch('https://script.google.com/macros/s/AKfycbyVqV2F8XZm-xt_hbTacKQgdgQLF8UmYhJ9iSMSQmdiw6_U_4teEY0jun-BzTLkMtRt/exec', {
 			  method: 'POST',
 			  headers: {
 				'Content-Type': 'text/plain;charset=utf-8',
@@ -972,7 +1010,7 @@
 			.catch(error => {
 			  console.error('Error:', error);
 			  // Handle the error here
-			});                
+			});
 		}
     </script>	
 </body>
